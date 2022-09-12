@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Repositories\Product;
+namespace App\Repositories\Banner;
 
+use App\Factories\BannerFactory;
 use App\Factories\ProductFactory;
+use App\Models\Enums\PagePosition;
 use App\Repositories\MySqlRepository;
 use Illuminate\Http\Client\Request;
-use App\Models\Entities\Product;
 use Illuminate\Support\Collection;
 
-class MySqlProductRepository extends MySqlRepository implements ProductInterface
+class BannerRepository extends MySqlRepository implements BannerInterface
 {
-
     public function __construct()
     {
-        $this->table = "products";
+        $this->table = "banners";
         $this->primaryKey = "id";
 
     }
@@ -36,19 +36,26 @@ class MySqlProductRepository extends MySqlRepository implements ProductInterface
             $query->limit($count);
         }
         $products = $query->get();
+        return $products ? (new BannerFactory())->makeFromCollection($products) : null;
+    }
+
+    public function getAllByCategoryId($id): ?Collection
+    {
+        $banners = $this->newQuery()
+            ->where('category_id', $id)->get();
+        return $banners ? (new BannerFactory())->makeFromCollection($banners) : null;
+    }
+
+    public function getOneById($id)
+    {
+        //todo
+    }
+
+    public function getAllByHomePosition(): ?Collection
+    {
+        $products = $this->newQuery()
+            ->where('position', PagePosition::HOME)->get();
         return $products ? (new ProductFactory())->makeFromCollection($products) : null;
-    }
-
-    public function getOneById($id): ?Product
-    {
-        $product = $this->newQuery()
-            ->where($this->primaryKey, $id)->first();
-        return $product ? (new ProductFactory())->make($product) : null;
-    }
-
-    public function getAllByCategoryId($id)
-    {
-        // TODO: Implement getAllByCategoryId() method.
     }
 
     public function create(Request $request)

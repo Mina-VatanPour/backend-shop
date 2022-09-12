@@ -12,21 +12,15 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('banners', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('category_id');
             $table->string('title');
-            $table->text('description')->nullable();
-            $table->string('amount');
-            $table->integer('inventory');
-            $table->unsignedInteger('priority');
-            $table->integer('viewed');
-            $table->integer('discount');
+            $table->enum('position', ['home']);
+            $table->string('path');
+            $table->string('uri');
             $table->boolean('disabled');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
-
-            $table->foreign('category_id')->references('id')->on('categories');
         });
     }
 
@@ -37,6 +31,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('banners');
     }
 };

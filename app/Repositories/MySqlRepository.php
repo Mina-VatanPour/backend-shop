@@ -27,54 +27,6 @@ abstract class  MySqlRepository
         return app('db')->table($this->table);
     }
 
-    public function exists($columnValue, $columnName = null)
-    {
-        if (is_null($columnName)) {
-            $columnName = $this->primaryKey;
-        }
-        return $this->newQuery()->where($columnName, $columnValue)->exists();
-    }
-
-    /**
-     * @param int $offset
-     * @param int $count
-     * @param int|null $total
-     * @param array $orders
-     * @param array $filters
-     * @return Builder
-     */
-    public function processGridViewQuery(Builder $query, ?int &$total, int $offset = 0, int $count = 0, array $orders = [], array $filters = []): Builder
-    {
-        if ($orders) {
-            $query = $this->processOrder($query, $orders);
-        }
-
-        if ($filters) {
-            $query = $this->processFilter($query, $filters);
-        }
-
-        $total = $query->count();
-
-        if ($count) {
-            $query->offset($offset);
-            $query->limit($count);
-        }
-        return $query;
-    }
-
-    /**
-     * @param Entity $model
-     */
-    public function updateOrCreate($model): void
-    {
-        if ($this->exists($model->getPrimaryKey())) {
-            $this->update($model);
-        } else {
-            $this->create($model);
-        }
-    }
-
-
     protected function processOrder($query, $orders, $columnsMapper = [])
     {
         foreach ($orders as $order) {

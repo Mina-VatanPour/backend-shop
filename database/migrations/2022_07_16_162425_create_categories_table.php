@@ -12,21 +12,14 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('category_id');
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('title');
-            $table->text('description')->nullable();
-            $table->string('amount');
-            $table->integer('inventory');
-            $table->unsignedInteger('priority');
-            $table->integer('viewed');
-            $table->integer('discount');
-            $table->boolean('disabled');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreign('parent_id')->references('id')->on('categories');
         });
     }
 
@@ -37,6 +30,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('categories');
     }
 };

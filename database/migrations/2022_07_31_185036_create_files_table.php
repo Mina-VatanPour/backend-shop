@@ -12,20 +12,19 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('category_id');
-            $table->string('title');
-            $table->text('description')->nullable();
-            $table->string('amount');
-            $table->integer('inventory');
+        Schema::create('files', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->unsignedBigInteger('banner_id')->nullable();
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->string('name');
             $table->unsignedInteger('priority');
-            $table->integer('viewed');
-            $table->integer('discount');
-            $table->boolean('disabled');
+            $table->string('path');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 
+            $table->foreign('product_id')->references('id')->on('products');
+            $table->foreign('banner_id')->references('id')->on('banners');
             $table->foreign('category_id')->references('id')->on('categories');
         });
     }
@@ -37,6 +36,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('files');
     }
 };
